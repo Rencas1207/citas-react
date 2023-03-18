@@ -1,12 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Error from './Error';
 
-export const Formulario = () => {
+export const Formulario = ({ setPacientes }) => {
+
+  const generarId = () => {
+    const random = Math.random().toString(36).substring(2);
+    const fecha = Date.now().toString(36);
+
+    return random + fecha
+  }
+
   const [paciente, setPaciente] = useState({
     mascota: '',
     propietario: '',
     email: '',
     fechaAlta: '',
     sintomas: '',
+    id: generarId()
   });
 
   const [error, setError] = useState(false);
@@ -20,6 +30,7 @@ export const Formulario = () => {
     });
   };
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -31,6 +42,18 @@ export const Formulario = () => {
     }
 
     setError(false);
+    // el estado de "pacientes" ya viene por defecto y no tenemos que pasarlo como prop
+    setPacientes((pacientes) => [...pacientes, paciente]);
+    setPaciente({
+      mascota: '',
+      propietario: '',
+      email: '',
+      fechaAlta: '',
+      sintomas: '',
+    });
+
+    // reset de los campos del formulario
+    // Object.keys(paciente).map((key) => (paciente[key] = ''));
   };
 
   return (
@@ -42,13 +65,13 @@ export const Formulario = () => {
       </p>
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-xl py-10 px-5 mb-20 sticky top-5 mx-5"
+        className="bg-white overflow-y-scroll h-screen shadow-md rounded-xl py-10 px-5 mb-20 sticky top-5 mx-5"
         action=""
       >
         {error && (
-          <div className="bg-red-800 text-center text-white uppercase font-bold p-5 mb-8 rounded-xl">
-            <p>Todos los campos son obligatorios</p>
-          </div>
+          <Error>
+            <p>Todos los mensaje son obligatorios</p>
+          </Error>
         )}
         <div className="mb-5">
           <label
@@ -106,7 +129,7 @@ export const Formulario = () => {
             className="block text-gray-700 uppercase font-bold"
             htmlFor="alta"
           >
-            Alta
+            Fecha Alta
           </label>
           <input
             id="alta"
