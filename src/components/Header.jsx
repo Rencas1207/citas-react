@@ -1,8 +1,4 @@
-export const Header = ({ tomaUnValor }) => {
-  const variableHeader = true;
-
-  tomaUnValor(variableHeader);
-
+export const Header = () => {
   return (
     <h1 className="font-black text-5xl text-center mx-auto md:w-2/3">
       Seguimiento Pacientes{' '}

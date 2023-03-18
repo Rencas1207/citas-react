@@ -6,17 +6,21 @@ import { ListadoPacientes } from './components/ListadoPacientes';
 
 function App() {
   const [pacientes, setPacientes] = useState([]);
+  const [pacienteGlobal, setPacienteGlobal] = useState({});
 
-  const tomaUnValor = (valor) => {
-    console.log(valor);
-  };
+  const deletePaciente = (id) => {
+    const pacientesUpdated = pacientes.filter(paciente => paciente.id !== id);
+    setPacientes(pacientesUpdated);
+    setPacienteGlobal({});
+  }
+
 
   return (
     <div className="container mx-auto mt-20">
-      <Header tomaUnValor={tomaUnValor} />
+      <Header />
       <div className="mt-12 md:flex">
-        <Formulario setPacientes={setPacientes} />
-        <ListadoPacientes pacientes={pacientes} />
+        <Formulario pacientes={pacientes} setPacientes={setPacientes} setPacienteGlobal={setPacienteGlobal} pacienteGlobal={pacienteGlobal} />
+        <ListadoPacientes pacientes={pacientes} setPacienteGlobal={setPacienteGlobal} deletePaciente={deletePaciente} />
       </div>
     </div>
   );

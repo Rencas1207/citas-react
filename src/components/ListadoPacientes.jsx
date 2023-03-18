@@ -1,11 +1,9 @@
 import Paciente from "./Paciente";
 
-export const ListadoPacientes = ({ pacientes }) => {
-
+export const ListadoPacientes = ({ pacientes, setPacienteGlobal, deletePaciente }) => {
 
   return (
     <div className="md:w-1/2 lg:w-3/5">
-
       {
         pacientes && pacientes.length ? (
           <>
@@ -15,7 +13,7 @@ export const ListadoPacientes = ({ pacientes }) => {
               <span className="text-indigo-600 font-bold">Pacientes y Citas</span>
             </p>
             {pacientes.map((paciente) => (
-              <Paciente key={paciente.id} paciente={paciente} />
+              <Paciente key={paciente.id} paciente={paciente} setPacienteGlobal={setPacienteGlobal} deletePaciente={deletePaciente} />
             ))}
           </>
         )

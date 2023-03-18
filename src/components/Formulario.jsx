@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Error from './Error';
 
-export const Formulario = ({ setPacientes }) => {
+export const Formulario = ({ pacientes, setPacientes, pacienteGlobal, setPacienteGlobal }) => {
 
+  // Generar id
   const generarId = () => {
     const random = Math.random().toString(36).substring(2);
     const fecha = Date.now().toString(36);
@@ -15,18 +16,34 @@ export const Formulario = ({ setPacientes }) => {
     propietario: '',
     email: '',
     fechaAlta: '',
-    sintomas: '',
-    id: generarId()
+    sintomas: ''
   });
 
   const [error, setError] = useState(false);
+
+  // renderiza cada vez cuando cambia la dependencia
+  useEffect(() => {
+    // console.log(Object.keys(pacienteGlobal));
+    if (Object.keys(pacienteGlobal).length > 0) {
+      // console.log('si hay');
+      setPaciente(pacienteGlobal);
+    } else {
+      setPaciente({
+        mascota: '',
+        propietario: '',
+        email: '',
+        fechaAlta: '',
+        sintomas: '',
+      });
+    }
+  }, [pacienteGlobal])
 
   const { mascota, propietario, email, fechaAlta, sintomas } = paciente;
 
   const handleChange = (e) => {
     setPaciente({
       ...paciente,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
@@ -36,14 +53,29 @@ export const Formulario = ({ setPacientes }) => {
 
     // Validación del formulario
     if (Object.values(paciente).includes('')) {
-      console.log('Hay al menos un campo vacío');
       setError(true);
       return;
     }
 
     setError(false);
     // el estado de "pacientes" ya viene por defecto y no tenemos que pasarlo como prop
-    setPacientes((pacientes) => [...pacientes, paciente]);
+
+    if (paciente.id) {
+      // editando registro
+      setPacientes({
+        ...paciente,
+        id: paciente.id
+      });
+      const pacienteUpdated = pacientes.map(pacienteState => pacienteState.id === paciente.id ? paciente : pacienteState);
+      setPacientes(pacienteUpdated);
+      setPacienteGlobal({});
+    } else {
+      // nuevo registro
+      paciente.id = generarId();
+      setPacientes([...pacientes, paciente]);
+    }
+
+    // reset el formulario
     setPaciente({
       mascota: '',
       propietario: '',
@@ -51,9 +83,6 @@ export const Formulario = ({ setPacientes }) => {
       fechaAlta: '',
       sintomas: '',
     });
-
-    // reset de los campos del formulario
-    // Object.keys(paciente).map((key) => (paciente[key] = ''));
   };
 
   return (
@@ -160,7 +189,7 @@ export const Formulario = ({ setPacientes }) => {
         <input
           type="submit"
           className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-all"
-          value="Agregar paciente"
+          value={paciente.id ? 'Editar paciente' : 'Agregar paciente'}
         />
       </form>
     </div>
